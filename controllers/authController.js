@@ -1,23 +1,41 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const generateToken = require('../utils/generateToken');
-const sendResponse = require('../utils/sendResponse');
-const sendEmail = require('../utils/sendEmail');
+const User = require("../models/User");
+const bcrypt = require("bcrypt");
+const generateToken = require("../utils/generateToken");
+const sendResponse = require("../utils/sendResponse");
+const sendEmail = require("../utils/sendEmail");
 
-const signUp = async (req, res, next) => {
+const signup = async (req, res, next) => {
   try {
     const { name, email, password, role } = req.body;
-    const existing = await User.findOne({ email });
-    if (existing) return sendResponse(res, 400, false, 'Email already exists');
+    const existingUser = await User.findOne({ email });
+    if (existingUser)
+      return sendResponse(res, 400, false, "Email already in use");
 
-    const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email, password: hashed, role });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      role,
+    });
 
-    const token = generateToken({ id: user._id, role: user.role });
-    sendResponse(res, 201, true, 'Registered successfully', { token, user });
-  } catch (err) {
-    next(err);
+    const token = generateToken({
+      id: newUser._id,
+      email: newUser.email,
+      role: newUser.role,
+    });
+
+    sendResponse(res, 201, true, "User Registered Successfully", {
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+      },
+      token,
+    });
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -25,57 +43,101 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    if (!user) return sendResponse(res, 404, false, 'User not found');
+    if (!user) return sendResponse(res, 404, false, "User Not Found");
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return sendResponse(res, 401, false, 'Invalid credentials');
+    if (!isMatch) return sendResponse(res, 401, false, "Invalid Credentials");
 
-    const token = generateToken({ id: user._id, role: user.role });
-    sendResponse(res, 200, true, 'Login successful', { token, user });
-  } catch (err) {
-    next(err);
+    const token = generateToken({
+      id: user._id,
+      email: user.email,
+      role: user.role,
+    });
+
+    sendResponse(res, 200, true, "Login Successful", {
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    next(error);
   }
 };
 
-const forgotPassword = async (req, res, next) => {
+const forgetPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email });
-    if (!user) return sendResponse(res, 404, false, 'User not found');
+    if (!user) return sendResponse(res, 404, false, "User Not Found");
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
-    const resetURL = `${process.env.CLIENT_URL}/reset-password/${token}`;
+    const otp = Math.floor(1000 + Math.random() * 9000);
+    user.otp = otp;
+    await user.save();
 
-    const html = `<h3>Reset Your Password</h3>
-    <p>Click <a href="${resetURL}">here</a> to reset your password.</p>`;
+    const html = `<h2>Password Reset OTP</h2><p>Your OTP is: <strong>${otp}</strong></p>`;
+    await sendEmail(user.email, "Password Reset OTP", html);
 
-    await sendEmail(user.email, 'Password Reset Request', html);
-    sendResponse(res, 200, true, 'Password reset email sent');
-  } catch (err) {
-    next(err);
+    sendResponse(res, 200, true, "OTP Sent to Email");
+  } catch (error) {
+    next(error);
   }
 };
 
 const resetPassword = async (req, res, next) => {
   try {
-    const { token, newPassword } = req.body;
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { email, OTP, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return sendResponse(res, 404, false, "User Not Found");
+    if (Number(OTP) !== user.otp)
+      return sendResponse(res, 400, false, "Invalid OTP");
 
-    const user = await User.findById(decoded.id);
-    if (!user) return sendResponse(res, 404, false, 'Invalid token');
+    user.password = await bcrypt.hash(password, 10);
+    user.otp = null;
+    await user.save();
+
+    sendResponse(res, 200, true, "Password Updated Successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+
+const changePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.id;
+    const user = await User.findById(userId).select("+password");
+    if (!user) return sendResponse(res, 404, false, "User Not Found");
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch)
+      return sendResponse(res, 400, false, "Incorrect current password");
+
+    const isSame = await bcrypt.compare(newPassword, user.password);
+    if (isSame)
+      return sendResponse(
+        res,
+        400,
+        false,
+        "New password cannot be the same as current"
+      );
 
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
 
-    sendResponse(res, 200, true, 'Password reset successful');
-  } catch (err) {
-    next(err);
+    sendResponse(res, 200, true, "Password Changed Successfully");
+  } catch (error) {
+    next(error);
   }
 };
 
 module.exports = {
-    signUp,
-    login,
-    forgotPassword,
-    resetPassword
-}
+  signup,
+  login,
+  forgetPassword,
+  resetPassword,
+  changePassword,
+};
