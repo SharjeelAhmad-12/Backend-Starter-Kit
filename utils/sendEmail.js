@@ -9,8 +9,6 @@ const sendEmail = async (to, subject, html) => {
         pass: process.env.EMAIL_PASS,
       },
     });
-   console.log(process.env.EMAIL_USER)
-   console.log(process.env.EMAIL_PASS)
 
     const mailOptions = {
       from: `"Your App Name" <${process.env.EMAIL_USER}>`,
