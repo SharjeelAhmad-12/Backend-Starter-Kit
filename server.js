@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const profileRoutes = require("./routes/profileRoutes");
 
 dotenv.config();
 connectDB();
@@ -15,6 +16,7 @@ app.use(express.json());
 
 
 app.use('/api/auth', authRoutes);
+app.use("/api/profile", profileRoutes);
 
 app.use((err, req, res, next) => {
   res.status(500).json({
