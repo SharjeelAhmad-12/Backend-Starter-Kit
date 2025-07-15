@@ -8,7 +8,10 @@ const userSchema = new mongoose.Schema(
     role: { type: String, enum: ["user", "admin"], default: "user" },
     otp: { type: Number, default: null },
     phone: { type: String, default: null },
-    profileImage: { type: String, default: null },
+    profileImage: {
+      url: { type: String, default: null },
+      public_id: { type: String, default: null },
+    },
   },
   { timestamps: true }
 );

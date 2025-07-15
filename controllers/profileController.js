@@ -28,7 +28,10 @@ const updateProfile = async (req, res) => {
       });
 
     const result = await streamUpload();
-    updates.profileImage = result.secure_url;
+    updates.profileImage = {
+      url: result.secure_url,
+      public_id: result.public_id,
+    };
   }
 
   const updatedUser = await User.findByIdAndUpdate(req.user._id, updates, {
@@ -39,8 +42,21 @@ const updateProfile = async (req, res) => {
 };
 
 const deleteProfile = async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  if (user.profileImage?.public_id) {
+    try {
+      await cloudinary.uploader.destroy(user.profileImage.public_id);
+    } catch (error) {
+      console.error("Cloudinary deletion failed:", error);
+    }
+  }
+
   await User.findByIdAndDelete(req.user._id);
-  res.json({ message: "Profile deleted" });
+
+  res.json({ message: "User and profile image deleted successfully" });
 };
 
 module.exports = {
