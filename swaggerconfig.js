@@ -7,11 +7,12 @@ const swaggerDefinition = {
   info: {
     title: "User Management API",
     version: "1.0.0",
-    description: "API for managing users and OTP verification",
+    description: "API for managing user registration, login, password handling, and OTP verification.",
   },
   servers: [
     {
-      url: "http://localhost:8000", // ✅ Keep as base URL
+      url: "http://localhost:8000", // ✅ Your base URL
+      description: "Local development server",
     },
   ],
   components: {
@@ -33,13 +34,13 @@ const swaggerDefinition = {
 // Options for swagger-jsdoc
 const options = {
   swaggerDefinition,
-  apis: ["./routes/*.js", "./models/*.js"], // ✅ Your route/model doc comments
+  apis: ["./routes/*.js", "./models/*.js"], // ✅ Include all routes/models with Swagger JSDoc comments
 };
 
 // Initialize swagger-jsdoc
 const swaggerSpec = swaggerJsDoc(options);
 
-// Function to setup Swagger
+// Function to set up Swagger docs
 const setupSwagger = (app) => {
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };

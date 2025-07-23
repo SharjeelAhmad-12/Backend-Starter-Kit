@@ -4,6 +4,7 @@ const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
 const userRoutes = require("./routes/userRoutes");
 const otpRoutes = require("./routes/otpRoutes");
+const authRoutes = require("./routes/authRoutes"); 
 const setupSwagger = require("./swaggerconfig"); // ✅ Correct import
 
 dotenv.config();
@@ -21,6 +22,7 @@ setupSwagger(app); // ✅ Apply swagger config
 // API Routes
 app.use("/api/users", userRoutes);
 app.use("/api/otp", otpRoutes);
+app.use("/api/auth", authRoutes);
 
 // Root Route
 app.get("/", (req, res) => {
