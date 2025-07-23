@@ -1,6 +1,7 @@
 const User = require("../models/User");
-const cloudinary = require("../utils/cloudinary");
-const streamifier = require("streamifier");
+const cloudinary = require("../config/cloudinary");
+const streamUpload = require("../utils/cloudinaryUpload");
+
 
 const getProfile = async (req, res) => {
   const user = await User.findById(req.user._id).select("-password -otp");
@@ -11,23 +12,7 @@ const updateProfile = async (req, res) => {
   const updates = req.body;
 
   if (req.file) {
-    const streamUpload = () =>
-      new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            folder: "profiles",
-            resource_type: "image",
-            transformation: [{ width: 500, crop: "limit" }],
-          },
-          (error, result) => {
-            if (result) resolve(result);
-            else reject(error);
-          }
-        );
-        streamifier.createReadStream(req.file.buffer).pipe(stream);
-      });
-
-    const result = await streamUpload();
+    const result = await streamUpload(req.file.buffer);
     updates.profileImage = {
       url: result.secure_url,
       public_id: result.public_id,
@@ -55,12 +40,11 @@ const deleteProfile = async (req, res) => {
   }
 
   await User.findByIdAndDelete(req.user._id);
-
   res.json({ message: "User and profile image deleted successfully" });
 };
 
 module.exports = {
-    getProfile,
-    updateProfile,
-    deleteProfile
-}
+  getProfile,
+  updateProfile,
+  deleteProfile,
+};
