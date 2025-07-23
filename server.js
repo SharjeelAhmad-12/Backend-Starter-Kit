@@ -7,17 +7,17 @@ const profileRoutes = require("./routes/profileRoutes");
 const otpRoutes = require("./routes/otpRoutes");
 const userRoutes = require("./routes/userRoutes");
 const cookieParser = require("cookie-parser");
-const setupSwagger = require('./config/swagger');
-
+const setupSwagger = require("./config/swagger");
 
 dotenv.config();
 connectDB();
 
 const app = express();
 
-// Middleware
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(cors());
 
 setupSwagger(app);
 
@@ -33,7 +33,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Root Route
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
