@@ -18,10 +18,15 @@ const signup = async (req, res, next) => {
       email,
       password: hashedPassword,
       role,
+      isVerified: false,
      
     });
-    await sendOTP(newUser._id, newUser.email);
-    newUser.isVerified = false; 
+    
+   const otp= await sendOTP(newUser._id, newUser.email);
+
+    newUser.otp = otp;
+    await newUser.save();
+
     const token = generateToken({
       id: newUser._id,
       email: newUser.email,
