@@ -18,10 +18,7 @@ const verifyOTP = async (req, res, next) => {
             if (otpRecord.verified) {
                 return sendResponse(res, 400, false, "OTP already verified");
             }
-            if (otpRecord.expiresAt < Date.now()) {
-                return sendResponse(res, 400, false, "OTP has expired");
-            }
-
+    
             otpRecord.verified = true;
             
             await otpRecord.save();
