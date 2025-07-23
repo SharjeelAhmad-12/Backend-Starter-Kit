@@ -19,11 +19,12 @@ const signup = async (req, res, next) => {
       password: hashedPassword,
       role,
     });
-    const otp= Math.floor(1000 + Math.random() * 9000).toString();
-    await Otp.create({userId: newUser._id,otp})
+    // const otp= Math.floor(1000 + Math.random() * 9000).toString();
+    // await Otp.create({userId: newUser._id,otp})
 
-    const html = `<h2>Welcome to Our Service</h2><p>Your OTP is: <strong>${otp}</strong></p>`;
-    
+    // const html = `<p>your OTP is : <strong>${otp}</strong></p>`;
+    // await sendEmail(newUser.email, "Enter OTp to verify your account", html);
+
     const token = generateToken({
       id: newUser._id,
       email: newUser.email,
