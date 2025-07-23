@@ -7,7 +7,8 @@ const profileRoutes = require("./routes/profileRoutes");
 const otpRoutes = require("./routes/otpRoutes");
 const userRoutes = require("./routes/userRoutes");
 const cookieParser = require("cookie-parser");
-const setupSwagger = require("./swaggerconfig");
+const setupSwagger = require('./config/swagger');
+
 
 dotenv.config();
 connectDB();
@@ -18,7 +19,6 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// Swagger Setup
 setupSwagger(app);
 
 app.use("/api/auth", authRoutes);
