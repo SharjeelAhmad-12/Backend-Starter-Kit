@@ -188,7 +188,7 @@ router.put('/change-password', authMiddleware, changePassword);
  *   post:
  *     summary: Logs out user
  *     tags: [Auth]
- *     description: This route uses HttpOnly cookies. Cannot be tested via Swagger UI.
+ *     description: Logs out user.
  *     responses:
  *       200:
  *         description: Logged out successfully
