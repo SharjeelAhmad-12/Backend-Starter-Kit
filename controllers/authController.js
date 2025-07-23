@@ -1,6 +1,10 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const generateToken = require("../utils/generateToken");
+const jwt = require("jsonwebtoken");
+const {
+  generateToken,
+  generateRefreshToken,
+} = require("../utils/generateToken");
 const sendResponse = require("../utils/sendResponse");
 const sendEmail = require("../utils/sendEmail");
 
@@ -23,6 +27,20 @@ const signup = async (req, res, next) => {
       id: newUser._id,
       email: newUser.email,
       role: newUser.role,
+    });
+
+    const refreshToken = generateRefreshToken({
+      id: newUser._id,
+      email: newUser.email,
+      role: newUser.role,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "None",
+      path: "/api/auth/refresh-token",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     sendResponse(res, 201, true, "User Registered Successfully", {
@@ -52,6 +70,27 @@ const login = async (req, res, next) => {
       id: user._id,
       email: user.email,
       role: user.role,
+    });
+
+    const refreshToken = generateRefreshToken({
+      id: user._id,
+      email: user.email,
+      role: user.role,
+    });
+
+    res.cookie("accessToken", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Lax",
+      maxAge: 15 * 60 * 1000,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "None",
+      path: "/api/auth/refresh-token",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     sendResponse(res, 200, true, "Login Successful", {
@@ -108,27 +147,106 @@ const resetPassword = async (req, res, next) => {
 const changePassword = async (req, res, next) => {
   try {
     const { currentPassword, newPassword } = req.body;
-    const userId = req.user.id;
-    const user = await User.findById(userId).select("+password");
+
+    if (!req.user || !req.user.id) {
+      return sendResponse(res, 401, false, "Unauthorized access");
+    }
+
+    const user = await User.findById(req.user.id).select("+password");
     if (!user) return sendResponse(res, 404, false, "User Not Found");
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
-    if (!isMatch)
+    if (!isMatch) {
       return sendResponse(res, 400, false, "Incorrect current password");
+    }
 
     const isSame = await bcrypt.compare(newPassword, user.password);
-    if (isSame)
+    if (isSame) {
       return sendResponse(
         res,
         400,
         false,
         "New password cannot be the same as current"
       );
+    }
 
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
 
+    const accessToken = generateToken({
+      id: user._id,
+      email: user.email,
+      role: user.role,
+    });
+
+    const refreshToken = generateRefreshToken({
+      id: user._id,
+      email: user.email,
+      role: user.role,
+    });
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Lax",
+      maxAge: 15 * 60 * 1000,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Lax",
+      path: "/api/auth/refreshAccessToken",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     sendResponse(res, 200, true, "Password Changed Successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+
+const logout = (req, res) => {
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: false, 
+    sameSite: "None",
+    path: "/api/auth/refresh-token", 
+  });
+
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "Lax",
+  });
+
+  sendResponse(res, 200, true, "Logged out successfully");
+};
+
+
+const refreshAccessToken = (req, res) => {
+  const token = req.cookies?.refreshToken;
+
+  if (!token) {
+    return sendResponse(res, 401, false, "No refresh token found");
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.REFRESH_SECRET);
+
+    const accessToken = generateToken({
+      id: decoded.id,
+      email: decoded.email,
+      role: decoded.role,
+    });
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    sendResponse(res, 200, true, { accessToken });
   } catch (error) {
     next(error);
   }
@@ -140,4 +258,6 @@ module.exports = {
   forgetPassword,
   resetPassword,
   changePassword,
+  refreshAccessToken,
+  logout,
 };
