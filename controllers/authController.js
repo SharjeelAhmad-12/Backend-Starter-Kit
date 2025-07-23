@@ -21,7 +21,7 @@ const signup = async (req, res, next) => {
      
     });
     await sendOTP(newUser._id, newUser.email);
-
+    newUser.isVerified = false; 
     const token = generateToken({
       id: newUser._id,
       email: newUser.email,
