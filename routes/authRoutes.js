@@ -25,7 +25,7 @@ const router = express.Router();
  * @swagger
  * /api/auth/signup:
  *   post:
- *     summary: Register a new user and set cookie
+ *     summary: Register a new user 
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -61,7 +61,7 @@ router.post('/signup', validateRequest(registerSchema), signup);
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Login user and set cookie
+ *     summary: Login user 
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -152,7 +152,7 @@ router.post('/reset-password', resetPassword);
  * @swagger
  * /api/auth/change-password:
  *   put:
- *     summary: Change the user's password and set new cookies + tokens
+ *     summary: Change the user's password 
  *     tags: [Auth]
  *     security:
  *       - bearerAuth: []
@@ -168,8 +168,10 @@ router.post('/reset-password', resetPassword);
  *             properties:
  *               currentPassword:
  *                 type: string
+ *                 example: string
  *               newPassword:
  *                 type: string
+ *                 example: string12
  *     responses:
  *       200:
  *         description: Password changed successfully
@@ -184,7 +186,7 @@ router.put('/change-password', authMiddleware, changePassword);
  * @swagger
  * /api/auth/logout:
  *   post:
- *     summary: Logs out user by clearing cookies
+ *     summary: Logs out user
  *     tags: [Auth]
  *     description: This route uses HttpOnly cookies. Cannot be tested via Swagger UI.
  *     responses:
@@ -197,7 +199,7 @@ router.post('/logout', authMiddleware, logout);
  * @swagger
  * /api/auth/refreshAccessToken:
  *   post:
- *     summary: Generate a new access token using refresh token cookie
+ *     summary: Generate a new access token 
  *     tags: [Auth]
  *     responses:
  *       200:

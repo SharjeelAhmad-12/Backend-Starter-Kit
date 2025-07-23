@@ -35,14 +35,6 @@ const signup = async (req, res, next) => {
       role: newUser.role,
     });
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "None",
-      path: "/api/auth/refresh-token",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
     sendResponse(res, 201, true, "User Registered Successfully", {
       user: {
         id: newUser._id,
@@ -51,6 +43,7 @@ const signup = async (req, res, next) => {
         role: newUser.role,
       },
       token,
+      refreshToken,
     });
   } catch (error) {
     next(error);
@@ -78,23 +71,9 @@ const login = async (req, res, next) => {
       role: user.role,
     });
 
-    res.cookie("accessToken", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "Lax",
-      maxAge: 15 * 60 * 1000,
-    });
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "None",
-      path: "/api/auth/refresh-token",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
     sendResponse(res, 200, true, "Login Successful", {
       token,
+      refreshToken,
       user: {
         id: user._id,
         name: user.name,
@@ -149,6 +128,7 @@ const changePassword = async (req, res, next) => {
     const { currentPassword, newPassword } = req.body;
 
     if (!req.user || !req.user.id) {
+      console.log("req.user:", req.user);
       return sendResponse(res, 401, false, "Unauthorized access");
     }
 
@@ -185,47 +165,22 @@ const changePassword = async (req, res, next) => {
       role: user.role,
     });
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "Lax",
-      maxAge: 15 * 60 * 1000,
+    sendResponse(res, 200, true, "Password Changed Successfully", {
+      accessToken,
+      refreshToken,
     });
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "Lax",
-      path: "/api/auth/refreshAccessToken",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    sendResponse(res, 200, true, "Password Changed Successfully");
   } catch (error) {
     next(error);
   }
 };
 
 const logout = (req, res) => {
-  res.clearCookie("refreshToken", {
-    httpOnly: true,
-    secure: false, 
-    sameSite: "None",
-    path: "/api/auth/refresh-token", 
-  });
-
-  res.clearCookie("accessToken", {
-    httpOnly: true,
-    secure: false,
-    sameSite: "Lax",
-  });
-
   sendResponse(res, 200, true, "Logged out successfully");
 };
 
-
-const refreshAccessToken = (req, res) => {
-  const token = req.cookies?.refreshToken;
+const refreshAccessToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader?.split(" ")[1];
 
   if (!token) {
     return sendResponse(res, 401, false, "No refresh token found");
@@ -240,17 +195,12 @@ const refreshAccessToken = (req, res) => {
       role: decoded.role,
     });
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
     sendResponse(res, 200, true, { accessToken });
   } catch (error) {
     next(error);
   }
 };
+
 
 module.exports = {
   signup,
