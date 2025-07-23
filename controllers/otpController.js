@@ -1,6 +1,8 @@
 const Otp= require("../models/otp");
 const User= require("../models/User");
 const sendResponse = require("../utils/sendResponse");
+const sendOTP = require("../utils/sendOTP");
+const crypto = require("crypto");
 
 const verifyOTP = async (req, res, next) => {
     
@@ -37,6 +39,44 @@ const verifyOTP = async (req, res, next) => {
         }
     }
 
-    module.exports = {
-        verifyOTP
-    };
+const resendOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return sendResponse(res, 404, false, 'User not found');
+    }
+
+    const existingOtp = await Otp.findOne({ userId: user._id }).sort({ createdAt: -1 });
+
+    if (existingOtp) {
+      const now = new Date();
+      const lastSentTime = new Date(existingOtp.createdAt);
+      const diffInMinutes = (now - lastSentTime) / (1000 * 60);
+
+      if (diffInMinutes < 2) {
+        const wait = Math.ceil(2 - diffInMinutes);
+        return sendResponse(
+          res,
+          429,
+          false,
+          `Please wait ${wait} more minute(s) before requesting another OTP.`
+        );
+      }
+    }
+
+   
+    await sendOTP(user._id, user.email);
+
+    return sendResponse(res, 200, true, 'OTP resent successfully');
+  } catch (err) {
+    console.error('Resend OTP error:', err);
+    return sendResponse(res, 500, false, 'Failed to resend OTP');
+  }
+};
+
+module.exports = {
+    verifyOTP,
+    resendOTP
+};
