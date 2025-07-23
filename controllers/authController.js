@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const generateToken = require("../utils/generateToken");
 const sendResponse = require("../utils/sendResponse");
 const sendEmail = require("../utils/sendEmail");
+const Otp = require("../models/otp");
 
 const signup = async (req, res, next) => {
   try {
@@ -18,7 +19,11 @@ const signup = async (req, res, next) => {
       password: hashedPassword,
       role,
     });
+    const otp= Math.floor(1000 + Math.random() * 9000).toString();
+    await Otp.create({userId: newUser._id,otp})
 
+    const html = `<h2>Welcome to Our Service</h2><p>Your OTP is: <strong>${otp}</strong></p>`;
+    
     const token = generateToken({
       id: newUser._id,
       email: newUser.email,
