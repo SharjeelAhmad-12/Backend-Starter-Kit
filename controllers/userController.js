@@ -3,6 +3,7 @@ const User= require("../models/User");
 const GetSearchedUsers=async(req,res)=>
 {
     try{
+           let query = {};
         const {search,role,isVerified,page=1,limit=10}=req.query;
         const regex= new RegExp(search, 'i');
         if(search)
