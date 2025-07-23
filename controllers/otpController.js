@@ -61,7 +61,7 @@ const resendOTP = async (req, res) => {
           res,
           429,
           false,
-          `Please wait ${wait} more minute(s) before requesting another OTP.`
+          `Please wait ${wait} more minutes before requesting another OTP.`
         );
       }
     }
