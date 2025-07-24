@@ -17,8 +17,12 @@ const userController = (userService) => {
 
   const updateProfile = async (req, res) => {
     try {
-      const imageBuffer = req.file?.buffer; 
-      const updatedUser = await userService.updateProfile(req.user._id, req.body, imageBuffer);
+      const imageBuffer = req.file?.buffer;
+      const updatedUser = await userService.updateProfile(
+        req.user._id,
+        req.body,
+        imageBuffer
+      );
       res.status(200).json({
         success: true,
         message: "Profile updated successfully",

@@ -1,4 +1,3 @@
-
 const otpServices = ({ OtpModel, UserModel, sendOTP, sendResponse }) => {
   const handleOTPVerification = async (req, res) => {
     try {
@@ -30,7 +29,6 @@ const otpServices = ({ OtpModel, UserModel, sendOTP, sendResponse }) => {
       }
 
       const otp = Math.floor(100000 + Math.random() * 900000);
-
       await OtpModel.deleteMany({ userId });
       await OtpModel.create({ userId, otp });
 

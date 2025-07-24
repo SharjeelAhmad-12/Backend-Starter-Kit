@@ -1,5 +1,5 @@
-const authService =(User, bcrypt, generateToken, generateRefreshToken,sendEmail,sendOTP)=>(
-{
+
+const authService = (User, bcrypt, generateToken, generateRefreshToken, sendEmail, sendOTP) => ({
   async signup(data) {
     const { name, email, password, role } = data;
     const existingUser = await User.findOne({ email });
@@ -103,6 +103,5 @@ const authService =(User, bcrypt, generateToken, generateRefreshToken,sendEmail,
     });
   },
 });
-
 
 module.exports = authService;

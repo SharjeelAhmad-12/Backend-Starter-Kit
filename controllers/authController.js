@@ -1,39 +1,14 @@
-
-const User = require("../models/user");
-const {generateToken, generateRefreshToken} = require("../utils/generateToken");
-
-const sendOTP = require("../utils/sendOTP");
+const authService = require("../loaders/authService");
 const sendResponse = require("../utils/sendResponse");
-const sendEmail = require("../utils/sendEmail");
 
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-
-const autServiceFactory = require("./services/authServices");
-const authService = autServiceFactory({
-  User,
-  sendOTP,
-  sendResponse,
-  sendEmail,
-  bcrypt,
-  jwt,
-  generateToken,
-  generateRefreshToken
-});
-
-const signup = async(req,res,next)=>
-{
-  try
-  {
-    const response= await authService.signup(req.body);
+const signup = async (req, res, next) => {
+  try {
+    const response = await authService.signup(req.body);
     sendResponse(res, 201, true, "User registered successfully", response);
-  }
-  catch(error)
-  {
+  } catch (error) {
     next(error);
   }
-}
-
+};
 
 const login = async (req, res, next) => {
   try {
@@ -85,6 +60,7 @@ const refreshAccessToken = (req, res, next) => {
 const logout = (req, res) => {
   sendResponse(res, 200, true, "Logged out successfully");
 };
+
 module.exports = {
   signup,
   login,
