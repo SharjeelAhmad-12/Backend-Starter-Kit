@@ -5,21 +5,15 @@ const {
   forgetPassword,
   resetPassword,
   changePassword,
-} = require("../controllers/authController");
-const {
-  registerSchema,
-  loginSchema,
-} = require("../validations/auth.validation");
-const validateRequest = require("../middlewares/validateRequest");
-const { authMiddleware } = require("../middlewares/authMiddleware");
-  logout,
+    logout,
   refreshAccessToken,
-} = require('../controllers/authController');
+} = require("../controllers/authController");
 const { registerSchema, loginSchema } = require('../validations/auth.validation');
 const validateRequest = require('../middlewares/validateRequest');
 const { authMiddleware } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
+
 
 /**
  * @swagger
@@ -162,173 +156,6 @@ router.post("/forgot-password", forgetPassword);
  *         description: User not found
  */
 router.post("/reset-password", resetPassword);
-
-/**
- * @swagger
- * /api/auth/change-password:
- *   put:
- *     summary: Change password (requires login)
- *     tags: [Auth]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - currentPassword
- *               - newPassword
- *             properties:
- *               currentPassword:
- *                 type: string
- *                 example: oldpassword123
- *               newPassword:
- *                 type: string
- *                 example: newsecurepassword456
- *     responses:
- *       200:
- *         description: Password Changed Successfully
- *       400:
- *         description: Incorrect current password or new password is the same
- *       404:
- *         description: User not found
- */
-router.put("/change-password", authMiddleware, changePassword);
-/**
- * @swagger
- * tags:
- *   name: Auth
- *   description: Authentication routes
- */
-
-/**
- * @swagger
- * /api/auth/signup:
- *   post:
- *     summary: Register a new user 
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - name
- *               - email
- *               - password
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *               role:
- *                 type: string
- *                 enum: [user, admin]
- *     responses:
- *       201:
- *         description: User registered successfully
- *       400:
- *         description: Email already in use
- */
-router.post('/signup', validateRequest(registerSchema), signup);
-
-
-/**
- * @swagger
- * /api/auth/login:
- *   post:
- *     summary: Login user 
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Login successful
- *       401:
- *         description: Invalid credentials
- */
-
-router.post('/login', validateRequest(loginSchema), login);
-
-/**
- * @swagger
- * /api/auth/forgot-password:
- *   post:
- *     summary: Send OTP to user's email for password reset
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *     responses:
- *       200:
- *         description: OTP sent to email
- *       404:
- *         description: User not found
- */
-router.post('/forgot-password', forgetPassword);
-
-/**
- * @swagger
- * /api/auth/reset-password:
- *   post:
- *     summary: Reset user password using OTP
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *               - OTP
- *               - password
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               OTP:
- *                 type: integer
- *                 example: 1234
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Password updated successfully
- *       400:
- *         description: Invalid OTP
- *       404:
- *         description: User not found
- */
-router.post('/reset-password', resetPassword);
 
 /**
  * @swagger

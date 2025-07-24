@@ -2,15 +2,14 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
-const authRoutes = require("./routes/authRoutes");
+
 const profileRoutes = require("./routes/profileRoutes");
 const otpRoutes = require("./routes/otpRoutes");
 const userRoutes = require("./routes/userRoutes");
-const cookieParser = require("cookie-parser");
-const setupSwagger = require("./config/swagger");
-const otpRoutes = require("./routes/otpRoutes");
 const authRoutes = require("./routes/authRoutes"); 
-const setupSwagger = require("./swaggerconfig"); // ✅ Correct import
+
+const setupSwagger = require("./config/swagger");
+
 
 dotenv.config();
 connectDB();
@@ -18,7 +17,7 @@ connectDB();
 const app = express();
 
 app.use(express.json());
-app.use(cookieParser());
+
 
 app.use(cors());
 
@@ -35,8 +34,6 @@ app.use((err, req, res, next) => {
     message: err.message || "An unexpected error occurred",
   });
 });
-app.use("/api/otp", otpRoutes);
-app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");
