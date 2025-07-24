@@ -5,24 +5,27 @@ const {
   forgetPassword,
   resetPassword,
   changePassword,
-    logout,
+  logout,
   refreshAccessToken,
 } = require("../controllers/authController");
-const { registerSchema, loginSchema } = require('../validations/auth.validation');
-const validateRequest = require('../middlewares/validateRequest');
-const verifyToken = require('../middlewares/verifyToken');
-
+const {
+  registerSchema,
+  loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  changePasswordSchema,
+} = require("../validations/auth.validation");
+const validateRequest = require("../middlewares/validateRequest");
+const verifyToken = require("../middlewares/verifyToken");
 
 const router = express.Router();
 
-
-router.post('/signup', validateRequest(registerSchema), signup);
-router.post('/login', validateRequest(loginSchema), login);
-router.post('/forgot-password', forgetPassword);
-router.post('/reset-password', resetPassword);
-router.put('/change-password', verifyToken, changePassword);
-router.post('/logout', verifyToken, logout);
-router.post('/refreshAccessToken', refreshAccessToken)
-
+router.post("/signup", validateRequest(registerSchema), signup);
+router.post("/login", validateRequest(loginSchema), login);
+router.post("/forgot-password",validateRequest(forgotPasswordSchema), forgetPassword);
+router.post("/reset-password", validateRequest(resetPasswordSchema),resetPassword);
+router.put("/change-password", verifyToken, validateRequest(changePasswordSchema),changePassword);
+router.post("/logout", verifyToken, logout);
+router.post("/refreshAccessToken", refreshAccessToken);
 
 module.exports = router;
