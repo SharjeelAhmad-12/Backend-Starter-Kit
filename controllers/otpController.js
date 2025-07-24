@@ -1,5 +1,5 @@
 const Otp= require("../models/otp");
-const User= require("../models/User");
+const User= require("../models/user");
 const sendResponse = require("../utils/sendResponse");
 const sendOTP = require("../utils/sendOTP");
 const crypto = require("crypto");

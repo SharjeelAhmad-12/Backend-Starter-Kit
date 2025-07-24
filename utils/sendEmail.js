@@ -9,8 +9,10 @@ const sendEmail = async (email, subject, html) => {
         pass: process.env.EMAIL_PASS,
       },
     });
+    
    // Verify connection before sending
     await transporter.verify();
+
     console.log('SMTP connection verified ✅');
 
     const mailOptions = {
