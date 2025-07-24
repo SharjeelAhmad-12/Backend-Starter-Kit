@@ -2,14 +2,14 @@
  * @swagger
  * tags:
  *   name: Auth
- *   description: Authentication routes
+ *   description: Authentication and user management
  */
 
 /**
  * @swagger
  * /api/auth/signup:
  *   post:
- *     summary: Register a new user 
+ *     summary: Register a new user
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -24,27 +24,30 @@
  *             properties:
  *               name:
  *                 type: string
+ *                 example: John Doe
  *               email:
  *                 type: string
  *                 format: email
+ *                 example: johndoe@example.com
  *               password:
  *                 type: string
+ *                 example: strongpassword123
  *               role:
  *                 type: string
  *                 enum: [user, admin]
+ *                 example: user
  *     responses:
  *       201:
- *         description: User registered successfully
+ *         description: User Registered Successfully
  *       400:
  *         description: Email already in use
  */
-
 
 /**
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Login user 
+ *     summary: Login a user
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -59,21 +62,24 @@
  *               email:
  *                 type: string
  *                 format: email
+ *                 example: johndoe@example.com
  *               password:
  *                 type: string
+ *                 example: strongpassword123
  *     responses:
  *       200:
  *         description: Login successful
  *       401:
  *         description: Invalid credentials
+ *       404:
+ *         description: User not found
  */
-
 
 /**
  * @swagger
  * /api/auth/forgot-password:
  *   post:
- *     summary: Send OTP to user's email for password reset
+ *     summary: Request a password reset OTP
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -87,19 +93,19 @@
  *               email:
  *                 type: string
  *                 format: email
+ *                 example: johndoe@example.com
  *     responses:
  *       200:
- *         description: OTP sent to email
+ *         description: OTP Sent to Email
  *       404:
  *         description: User not found
  */
-
 
 /**
  * @swagger
  * /api/auth/reset-password:
  *   post:
- *     summary: Reset user password using OTP
+ *     summary: Reset password using OTP
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -114,21 +120,21 @@
  *             properties:
  *               email:
  *                 type: string
- *                 format: email
+ *                 example: johndoe@example.com
  *               OTP:
- *                 type: integer
- *                 example: 1234
+ *                 type: number
+ *                 example: 123456
  *               password:
  *                 type: string
+ *                 example: newsecurepassword
  *     responses:
  *       200:
- *         description: Password updated successfully
+ *         description: Password Updated Successfully
  *       400:
  *         description: Invalid OTP
  *       404:
  *         description: User not found
  */
-
 
 /**
  * @swagger
@@ -150,10 +156,10 @@
  *             properties:
  *               currentPassword:
  *                 type: string
- *                 example: string
+ *                 example: strongpassword123
  *               newPassword:
  *                 type: string
- *                 example: string12
+ *                 example: newstrongpassword123
  *     responses:
  *       200:
  *         description: Password changed successfully
@@ -162,7 +168,6 @@
  *       401:
  *         description: Unauthorized
  */
-
 
 /**
  * @swagger
@@ -176,7 +181,6 @@
  *         description: Logged out successfully
  */
 
-
 /**
  * @swagger
  * /api/auth/refreshAccessToken:
@@ -189,3 +193,4 @@
  *       401:
  *         description: No refresh token found or invalid
  */
+
