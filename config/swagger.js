@@ -1,25 +1,25 @@
-const swaggerJsdoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 
 const options = {
   definition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
-      title: 'Your API Name',
-      version: '1.0.0',
-      description: 'API documentation using Swagger',
+      title: "Your API Name",
+      version: "1.0.0",
+      description: "API documentation using Swagger",
     },
     servers: [
       {
-        url: 'http://localhost:8000',
+        url: "http://localhost:8000",
       },
     ],
     components: {
       securitySchemes: {
         bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
         },
       },
     },
@@ -29,13 +29,23 @@ const options = {
       },
     ],
   },
-  apis: ['./routes/authRoutes.js'], 
+  apis: [
+    "./routes/authRoutes.js",
+    "./docs/authSwagger.js",
+    "./routes/profileRoutes.js",
+    "./docs/profileSwagger.js",
+     "./models/*.js",
+     "./docs/otpSwagger.js",
+     "./routes/otpRoutes.js",
+     "./docs/userSwagger.js",
+     "./routes/userRoutes.js"
+  ],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
 
 const setupSwagger = (app) => {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };
 
 module.exports = setupSwagger;
