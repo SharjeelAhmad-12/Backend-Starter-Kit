@@ -1,7 +1,7 @@
 const otpServices = require("../services/otp.service");
-const otpController = require("../controllers/otp.controller");
-const OtpModel = require("../models/otp.model");
-const UserModel = require("../models/user.model");
+const otpController = require("../controllers/otpController");
+const OtpModel = require("../models/otp");
+const UserModel = require("../models/user");
 const sendOTP = require("../utils/sendEmail");
 const sendResponse = require("../utils/sendResponse");
 
