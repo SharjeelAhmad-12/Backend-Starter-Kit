@@ -8,6 +8,9 @@ const otpRoutes = require("./routes/otpRoutes");
 const userRoutes = require("./routes/userRoutes");
 const cookieParser = require("cookie-parser");
 const setupSwagger = require("./config/swagger");
+const otpRoutes = require("./routes/otpRoutes");
+const authRoutes = require("./routes/authRoutes"); 
+const setupSwagger = require("./swaggerconfig"); // ✅ Correct import
 
 dotenv.config();
 connectDB();
@@ -32,6 +35,8 @@ app.use((err, req, res, next) => {
     message: err.message || "An unexpected error occurred",
   });
 });
+app.use("/api/otp", otpRoutes);
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");

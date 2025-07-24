@@ -40,32 +40,12 @@ const { authMiddleware, authorizeRoles } = require("../middlewares/authMiddlewar
  *     responses:
  *       200:
  *         description: Successfully retrieved users
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/User'
- *                 totalUsers:
- *                   type: integer
- *                 totalPages:
- *                   type: integer
- *                 currentPage:
- *                   type: integer
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden
- *       500:
- *         description: Internal Server Error
  */
-router.get("/search-users", authMiddleware, authorizeRoles("admin"), GetSearchedUsers);
+router.get(
+  "/search-users",
+  authMiddleware,
+  authorizeRoles("admin"),
+  GetSearchedUsers
+);
 
 module.exports = router;
