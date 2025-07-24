@@ -219,3 +219,25 @@
 //   refreshAccessToken,
 //   logout,
 // };
+
+const User = require("../models/user");
+const {generateToken, generateRefreshToken} = require("../utils/generateToken");
+
+const sendOTP = require("../utils/sendOTP");
+const sendResponse = require("../utils/sendResponse");
+const sendEmail = require("../utils/sendEmail");
+
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+const autServiceFactory = require("./services/authServices");
+const authService = autServiceFactory({
+  User,
+  sendOTP,
+  sendResponse,
+  sendEmail,
+  bcrypt,
+  jwt,
+  generateToken,
+  generateRefreshToken
+});

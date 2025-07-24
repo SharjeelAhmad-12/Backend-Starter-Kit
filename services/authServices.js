@@ -1,4 +1,4 @@
-const authService =(User, bcrypt, generateToken, generateRefreshToken,sendOTP)=>(
+const authService =(User, bcrypt, generateToken, generateRefreshToken,sendEmail,sendOTP)=>(
 {
   async signup(data) {
     const { name, email, password, role } = data;
