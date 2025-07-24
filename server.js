@@ -1,46 +1,33 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const cors = require("cors");
 const connectDB = require("./config/db");
-
-const profileRoutes = require("./routes/profileRoutes");
-const otpRoutes = require("./routes/otpRoutes");
+const cookieParser = require("cookie-parser");
 const userRoutes = require("./routes/userRoutes");
+const otpRoutes = require("./routes/otpRoutes");
 const authRoutes = require("./routes/authRoutes"); 
-
-const setupSwagger = require("./config/swagger");
-
 
 dotenv.config();
 connectDB();
 
 const app = express();
 
+// Middleware
 app.use(express.json());
+app.use(cookieParser());
 
 
-app.use(cors());
-
-setupSwagger(app);
-
-app.use("/api/auth", authRoutes);
-app.use("/api/profile", profileRoutes);
-app.use("/api/otp", otpRoutes);
+// API Routes
 app.use("/api/users", userRoutes);
+app.use("/api/otp", otpRoutes);
+app.use("/api/auth", authRoutes);
 
-app.use((err, req, res, next) => {
-  res.status(500).json({
-    success: false,
-    message: err.message || "An unexpected error occurred",
-  });
-});
-
+// Root Route
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
+// Start server
 const PORT = process.env.PORT || 8000;
-
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
   console.log(`📘 Swagger docs at http://localhost:${PORT}/api-docs`);
