@@ -34,6 +34,11 @@ const options = {
     "./docs/authSwagger.js",
     "./routes/profileRoutes.js",
     "./docs/profileSwagger.js",
+     "./models/*.js",
+     "./docs/otpSwagger.js",
+     "./routes/otpRoutes.js",
+     "./docs/userSwagger.js",
+     "./routes/userRoutes.js"
   ],
 };
 
