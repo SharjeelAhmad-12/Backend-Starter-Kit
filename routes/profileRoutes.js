@@ -4,21 +4,21 @@ const {
   updateProfile,
   deleteProfile,
 } = require("../controllers/profileController");
-const { authMiddleware } = require("../middlewares/authMiddleware");
+const verifyToken=require("../middlewares/verifyToken")
 const validateRequest = require("../middlewares/validateRequest");
 const upload = require("../middlewares/uploadMiddleware");
 const { updateProfileSchema } = require("../validations/profileValidation");
 
 const router = express.Router();
 
-router.get("/", authMiddleware, getProfile);
+router.get("/", verifyToken, getProfile);
 router.put(
   "/",
-  authMiddleware,
+  verifyToken,
   upload.single("profileImage"),
   validateRequest(updateProfileSchema),
   updateProfile
 );
-router.delete("/", authMiddleware, deleteProfile);
+router.delete("/", verifyToken, deleteProfile);
 
 module.exports = router;

@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const { GetSearchedUsers } = require("../controllers/userController");
-const { authMiddleware, authorizeRoles } = require("../middlewares/authMiddleware");
-
+const verifyToken=require("../middlewares/verifyToken");
+const authorizeRole=require("../middlewares/authorizeRole")
 
 router.get(
   "/search-users",
-  authMiddleware,
-  authorizeRoles("admin"),
+  verifyToken,
+  authorizeRole("admin"),
   GetSearchedUsers
 );
 
