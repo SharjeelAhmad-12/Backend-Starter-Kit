@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     role: { type: String, enum: ["user", "admin"], default: "user" },
     otp: { type: Number, default: null },
+    isVerified: { type: Boolean, default: false },
     phone: { type: String, default: null },
     profileImage: {
       url: { type: String, default: null },
@@ -16,4 +17,4 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.models.User || mongoose.model("User", userSchema);

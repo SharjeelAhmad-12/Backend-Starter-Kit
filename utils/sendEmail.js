@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-const sendEmail = async (to, subject, html) => {
+const sendEmail = async (email, subject, html) => {
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -9,10 +9,13 @@ const sendEmail = async (to, subject, html) => {
         pass: process.env.EMAIL_PASS,
       },
     });
+   // Verify connection before sending
+    await transporter.verify();
+    console.log('SMTP connection verified ✅');
 
     const mailOptions = {
       from: `"Your App Name" <${process.env.EMAIL_USER}>`,
-      to,
+      to: email,
       subject,
       html,
     };

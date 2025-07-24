@@ -1,30 +1,29 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const connectDB = require('./config/db');
-const authRoutes = require('./routes/authRoutes');
+const express = require("express");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
+const userRoutes = require("./routes/userRoutes");
+const otpRoutes = require("./routes/otpRoutes");
+const authRoutes = require("./routes/authRoutes"); 
 const profileRoutes = require("./routes/profileRoutes");
-const setupSwagger = require('./config/swagger');
 
 dotenv.config();
 connectDB();
 
 const app = express();
-const port = process.env.PORT || 5000;
 
-app.use(cors());
+// Middleware
 app.use(express.json());
 
-setupSwagger(app);
 
-app.use('/api/auth', authRoutes);
+// API Routes
+app.use("/api/users", userRoutes);
+app.use("/api/otp", otpRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 
-app.use((err, req, res, next) => {
-  res.status(500).json({
-    success: false,
-    message: err.message || 'An unexpected error occurred',
-  });
+// Root Route
+app.get("/", (req, res) => {
+  res.send("API is running...");
 });
 
 app.use((req, res) => {

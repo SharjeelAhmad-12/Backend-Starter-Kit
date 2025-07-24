@@ -7,6 +7,7 @@ const {
 } = require("../utils/generateToken");
 const sendResponse = require("../utils/sendResponse");
 const sendEmail = require("../utils/sendEmail");
+const sendOTP = require("../utils/sendOTP");
 
 const signup = async (req, res, next) => {
   try {
@@ -21,7 +22,14 @@ const signup = async (req, res, next) => {
       email,
       password: hashedPassword,
       role,
+      isVerified: false,
+     
     });
+    
+   const otp= await sendOTP(newUser._id, newUser.email);
+
+    newUser.otp = otp;
+    await newUser.save();
 
     const token = generateToken({
       id: newUser._id,
