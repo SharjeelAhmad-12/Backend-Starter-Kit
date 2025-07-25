@@ -28,7 +28,7 @@ const userRoutes = ({
     "/search-users",
     authMiddleware,
     authorizeRoles("admin"),
-    userController.GetSearchedUsers
+    userController.getSearchedUsers
   );
 
   return router;

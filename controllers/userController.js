@@ -76,3 +76,4 @@ const userController = (userService) => {
 };
 
 module.exports = userController;
+

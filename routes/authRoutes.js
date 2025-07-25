@@ -1,21 +1,16 @@
+
 const express = require("express");
 
-const authRoutes = ({
-  authController,
-  authMiddleware,
-  validateRequest,
-  registerSchema,
-  loginSchema,
-}) => {
+const authRoutes = (authController) => {
   const router = express.Router();
 
-  router.post("/signup", validateRequest(registerSchema), authController.signup);
-  router.post("/login", validateRequest(loginSchema), authController.login);
-  router.post("/forgot-password", authController.forgetPassword);
+  router.post("/signup", authController.signup);
+  router.post("/login", authController.login);
+  router.post("/forget-password", authController.forgetPassword);
   router.post("/reset-password", authController.resetPassword);
-  router.put("/change-password", authMiddleware, authController.changePassword);
-  router.post("/logout", authMiddleware, authController.logout);
-  router.post("/refreshAccessToken", authController.refreshAccessToken);
+  router.post("/change-password", authController.changePassword);
+  router.get("/refresh-token", authController.refreshAccessToken);
+  router.post("/logout", authController.logout);
 
   return router;
 };

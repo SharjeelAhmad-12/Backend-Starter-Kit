@@ -1,6 +1,6 @@
 const express = require("express");
 
-const otpRoutes = ({ otpController }) => {
+module.exports = (otpController) => {
   const router = express.Router();
 
   router.post("/verify-otp", otpController.verifyOTP);
@@ -8,5 +8,3 @@ const otpRoutes = ({ otpController }) => {
 
   return router;
 };
-
-module.exports = otpRoutes;

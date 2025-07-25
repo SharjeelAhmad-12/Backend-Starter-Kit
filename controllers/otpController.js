@@ -1,16 +1,23 @@
-const otpController = (otpService) => {
-  const verifyOTP = async (req, res) => {
-    return otpService.handleOTPVerification(req, res);
-  };
+const otpControllerFactory = (otpService) => ({
+  verifyOTP: async (req, res, next) => {
+    try {
+      const { userId, otp } = req.body;
+      const result = await otpService.handleOTPVerification(userId, otp);
+      res.status(200).json({ success: true, ...result });
+    } catch (error) {
+      next(error);
+    }
+  },
 
-  const resendOTP = async (req, res) => {
-    return otpService.handleResendOTP(req, res);
-  };
+  resendOTP: async (req, res, next) => {
+    try {
+      const { userId, email } = req.body;
+      const result = await otpService.handleResendOTP(userId, email);
+      res.status(200).json({ success: true, ...result });
+    } catch (error) {
+      next(error);
+    }
+  },
+});
 
-  return {
-    verifyOTP,
-    resendOTP,
-  };
-};
-
-module.exports = otpController;
+module.exports = otpControllerFactory;

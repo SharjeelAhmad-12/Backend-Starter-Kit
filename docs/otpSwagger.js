@@ -39,7 +39,6 @@
  *       500:
  *         description: Internal Server Error
  */
-
 /**
  * @swagger
  * /api/otp/resend-otp:
@@ -53,8 +52,13 @@
  *           schema:
  *             type: object
  *             required:
+ *               - userId
  *               - email
  *             properties:
+ *               userId:
+ *                 type: string
+ *                 description: ID of the user
+ *                 example: "64d3ff77b7e034001fbe290c"
  *               email:
  *                 type: string
  *                 description: Email address of the user
