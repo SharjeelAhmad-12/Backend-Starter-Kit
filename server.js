@@ -5,11 +5,14 @@ const userRoutes = require("./routes/userRoutes");
 const otpRoutes = require("./routes/otpRoutes");
 const authRoutes = require("./routes/authRoutes"); 
 const setupSwagger = require("./config/swagger");
+const morganMiddleware = require("./middlewares/morganMiddleware");
 
 dotenv.config();
 connectDB();
 
 const app = express();
+
+app.use(morganMiddleware);
 
 app.use(express.json());
 setupSwagger(app);
