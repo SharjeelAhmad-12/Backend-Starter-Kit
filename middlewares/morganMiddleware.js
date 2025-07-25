@@ -1,5 +1,5 @@
 const morgan = require("morgan");
-import logger from '../config/loggers.js';
+const logger = require("../config/loggers");
 
 const morganMiddleware = morgan(":method :url :status :res[content-length] - :response-time ms",
 {stream:{
@@ -7,3 +7,4 @@ const morganMiddleware = morgan(":method :url :status :res[content-length] - :re
 },}
 );
 
+module.exports = morganMiddleware;

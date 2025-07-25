@@ -1,8 +1,9 @@
-import {format , transporters, createLogger} from 'winston';
-import "winston-daily-rotate-file";
-const {combine,json,colorsize,simple} = format;
+const { format, transports, createLogger } = require('winston');
+require('winston-daily-rotate-file');
 
-const fileRotateTransport = new transporters.DailyRotateFile({
+const {combine,timestamp,json,colorsize,simple} = format;
+
+const fileRotateTransport = new transports.DailyRotateFile({
   filename: 'logs/%DATE%.log',
   datePattern: 'YYYY-MM-DD',
   zippedArchive: true,
@@ -34,5 +35,4 @@ if(process.env.NODE_ENV !== 'production') {
         )
     }));
 }
-
-export default logger;
+module.exports = logger;
