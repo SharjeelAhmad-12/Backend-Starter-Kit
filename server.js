@@ -1,39 +1,64 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-const userRoutes = require("./routes/userRoutes");
-const otpRoutes = require("./routes/otpRoutes");
-const authRoutes = require("./routes/authRoutes"); 
-const profileRoutes = require("./routes/profileRoutes");
+const morganMiddleware = require("./middlewares/morganMiddleware");
 const setupSwagger = require("./config/swagger");
 
+const authService = require("./loaders/authService");
+const otpService = require("./loaders/otpService");
+
+const authControllerFactory = require("./controllers/authController");
+const otpControllerFactory = require("./controllers/otpController");
+
+const authRoutes = require("./routes/authRoutes");
+const otpRoutes = require("./routes/otpRoutes");
+
+const userServiceFactory = require("./services/user.service");
+const User = require("./models/user");
+const cloudinary = require("./config/cloudinary");
+const streamUpload = require("./utils/cloudinaryUpload");
+
+const userService = userServiceFactory(User, cloudinary, streamUpload); 
+const userController = require("./controllers/userController")(userService);
+
+const profileController = userController;
+const userRoutes = require("./routes/userRoutes");
+
+const { authMiddleware, authorizeRoles } = require("./middlewares/authMiddleware");
+const validateRequest = require("./middlewares/validateRequest");
+const upload = require("./middlewares/uploadMiddleware");
+const updateProfileSchema = require("./validations/profileValidation");
+
 dotenv.config();
-connectDB();
 
 const app = express();
 
-// Middleware
 app.use(express.json());
 setupSwagger(app);
+app.use(morganMiddleware);
 
-// API Routes
-app.use("/api/users", userRoutes);
-app.use("/api/otp", otpRoutes);
-app.use("/api/auth", authRoutes);
-app.use("/api/profile", profileRoutes);
+const authController = authControllerFactory(authService);
+const otpController = otpControllerFactory(otpService);
 
-// Root Route
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
+app.use("/api/otp", otpRoutes(otpController));
+app.use("/api/auth", authRoutes(authController));
 
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: 'API route not found' });
-});
 
-// Start server
-const port = process.env.PORT || 8000;
-app.listen(port, () => {
-  console.log(`🚀 Server running at http://localhost:${port}`)
-  console.log(` Swagger docs at http://localhost:${port}/api-docs`)
+app.use(
+  "/api/users",
+  userRoutes({
+    profileController,
+    userController,
+    authMiddleware,
+    authorizeRoles,
+    validateRequest,
+    upload,
+    updateProfileSchema,
+  })
+);
+
+connectDB().then(() => {
+  app.listen(process.env.PORT || 8000, () => {
+    console.log(`🚀 Server running on port ${process.env.PORT || 8000}`);
+  });
 });

@@ -1,14 +1,37 @@
 const express = require("express");
-const router = express.Router();
-const { GetSearchedUsers } = require("../controllers/userController");
-const { authMiddleware, authorizeRoles } = require("../middlewares/authMiddleware");
 
-
-router.get(
-  "/search-users",
+const userRoutes = ({
+  profileController,
+  userController,
   authMiddleware,
-  authorizeRoles("admin"),
-  GetSearchedUsers
-);
+  authorizeRoles,
+  validateRequest,
+  upload,
+  updateProfileSchema,
+}) => {
+  const router = express.Router();
 
-module.exports = router;
+  
+  router.get("/profile", authMiddleware, profileController.getProfile);
+
+  router.put(
+    "/profile",
+    authMiddleware,
+    upload.single("profileImage"),
+    validateRequest(updateProfileSchema),
+    profileController.updateProfile
+  );
+
+  router.delete("/profile", authMiddleware, profileController.deleteProfile);
+
+  router.get(
+    "/search-users",
+    authMiddleware,
+    authorizeRoles("admin"),
+    userController.getSearchedUsers
+  );
+
+  return router;
+};
+
+module.exports = userRoutes;
