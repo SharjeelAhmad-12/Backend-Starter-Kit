@@ -1,4 +1,6 @@
 const authServiceFactory = require("../services/auth.service");
+const authControllerFactory = require("../controllers/authController");
+
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -15,4 +17,6 @@ const authService = authServiceFactory({
   sendOTP,
 });
 
-module.exports = authService;
+const authController = authControllerFactory(authService);
+
+module.exports = { authController };

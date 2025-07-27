@@ -4,7 +4,7 @@ const connectDB = require("./config/db");
 const morganMiddleware = require("./middlewares/morganMiddleware");
 const setupSwagger = require("./config/swagger");
 
-const authService = require("./loaders/authService");
+const authService = require("./loaders/authLoader");
 const otpService = require("./loaders/otpService");
 
 const authControllerFactory = require("./controllers/authController");
@@ -24,7 +24,9 @@ const userController = require("./controllers/userController")(userService);
 const profileController = userController;
 const userRoutes = require("./routes/userRoutes");
 
-const { authMiddleware, authorizeRoles } = require("./middlewares/authMiddleware");
+const verifyToken = require("./middlewares/verifyToken");
+const authorizeRole = require("./middlewares/authorizeRole");
+
 const validateRequest = require("./middlewares/validateRequest");
 const upload = require("./middlewares/uploadMiddleware");
 const updateProfileSchema = require("./validations/profileValidation");
@@ -41,7 +43,7 @@ const authController = authControllerFactory(authService);
 const otpController = otpControllerFactory(otpService);
 
 app.use("/api/otp", otpRoutes(otpController));
-app.use("/api/auth", authRoutes(authController));
+app.use("/api/auth", authRoutes({ authController }));
 
 
 app.use(
@@ -49,8 +51,8 @@ app.use(
   userRoutes({
     profileController,
     userController,
-    authMiddleware,
-    authorizeRoles,
+    verifyToken,
+    authorizeRole,
     validateRequest,
     upload,
     updateProfileSchema,
@@ -60,5 +62,6 @@ app.use(
 connectDB().then(() => {
   app.listen(process.env.PORT || 8000, () => {
     console.log(`🚀 Server running on port ${process.env.PORT || 8000}`);
+    console.log(`📚 Swagger docs available at: http://localhost:${process.env.PORT}/api-docs`);
   });
 });
