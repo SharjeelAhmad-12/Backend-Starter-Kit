@@ -31,6 +31,13 @@ const userRoutes = ({
     userController.getSearchedUsers
   );
 
+  router.post(
+    "/upload-file",
+    authMiddleware,
+    upload.single("file"),
+    userController.uploadFile
+
+  );
   return router;
 };
 
