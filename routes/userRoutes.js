@@ -1,4 +1,8 @@
 const express = require("express");
+const router = express.Router();
+const { GetSearchedUsers } = require("../controllers/userController");
+const verifyToken=require("../middlewares/verifyToken");
+const authorizeRole=require("../middlewares/authorizeRole")
 
 const userRoutes = ({
   profileController,
@@ -24,6 +28,12 @@ const userRoutes = ({
 
   router.delete("/profile", authMiddleware, profileController.deleteProfile);
 
+router.get(
+  "/search-users",
+  verifyToken,
+  authorizeRole("admin"),
+  GetSearchedUsers
+);
   router.get(
     "/search-users",
     authMiddleware,
