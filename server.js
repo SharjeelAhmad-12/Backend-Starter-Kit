@@ -26,7 +26,10 @@ const userController = require("./controllers/userController")(userService);
 const profileController = userController;
 const userRoutes = require("./routes/userRoutes");
 
-const { authMiddleware, authorizeRoles } = require("./middlewares/authMiddleware");
+// const { authMiddleware, authorizeRoles } = require("./middlewares/authMiddleware");
+const authorizeRole = require("./middlewares/authorizeRole");
+const verifyToken = require("./middlewares/verifyToken");
+
 const validateRequest = require("./middlewares/validateRequest");
 const upload = require("./middlewares/uploadMiddleware");
 const updateProfileSchema = require("./validations/profileValidation");
@@ -50,8 +53,8 @@ app.use(
   userRoutes({
     profileController,
     userController,
-    authMiddleware,
-    authorizeRoles,
+    verifyToken,
+    authorizeRole,
     validateRequest,
     upload,
     updateProfileSchema,
