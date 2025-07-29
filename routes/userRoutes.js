@@ -29,6 +29,13 @@ const userRoutes = ({
     authorizeRole("admin"),
     userController.getSearchedUsers
   );
+      router.post(
+    "/upload-file",
+    verifyToken,
+    upload.single("file"),
+    userController.uploadFile
+
+  );
 
   return router;
 };

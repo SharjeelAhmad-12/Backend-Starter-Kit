@@ -66,12 +66,43 @@ const userController = (userService) => {
       });
     }
   };
+  const uploadFile = async(req,res)=>
+  {
+console.log("req.file=", req.file);
+    try
+    {
+      if(!req.file)
+      {
+        return res.status(400).json({
+          success: false,
+          message: "No file uploaded",
+        });
+      }
+     const uploadedFile = await userService.uploadFile(req.file);
+
+      return res.status(200).json({
+        success: true,
+        message: "File uploaded successfully",
+        data: uploadedFile,
+      });
+
+    }
+    catch(error)
+    {
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  };
+
 
   return {
     getProfile,
     updateProfile,
     deleteProfile,
     getSearchedUsers,
+    uploadFile 
   };
 };
 

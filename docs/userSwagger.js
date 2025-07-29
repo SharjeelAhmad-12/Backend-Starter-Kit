@@ -106,3 +106,52 @@
  *       200:
  *         description: Successfully retrieved users
  */
+/**
+ * @swagger
+ * /api/users/upload-file:
+ *   post:
+ *     summary: Upload a file to Cloudinary (Authenticated users only)
+ *     tags: [Profile]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: The file to upload (image, video, etc.)
+ *     responses:
+ *       200:
+ *         description: File uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     filename:
+ *                       type: string
+ *                     url:
+ *                       type: string
+ *                     publicId:
+ *                       type: string
+ *                     size:
+ *                       type: integer
+ *       400:
+ *         description: No file uploaded
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error or Cloudinary upload failed
+ */
