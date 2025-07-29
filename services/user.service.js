@@ -1,3 +1,5 @@
+const { sanitizeFilter } = require("mongoose");
+
 const userServices = (User, cloudinary, streamUpload) => {
   const getProfile = async (userId) => {
     const user = await User.findById(userId).select("-password -otp");
@@ -55,11 +57,36 @@ const userServices = (User, cloudinary, streamUpload) => {
     return { users, totalUsers, totalPages, currentPage };
   };
 
+  const uploadFile = async (file) => {
+    if (!file) {
+      throw new Error("No file provided");
+    }
+
+    try {
+      const result = await streamUpload(file.buffer, {
+        folder: "user-uploads",
+        resource_type: "auto",
+      });
+
+      return {
+        filename: file.originalname,
+        url: result.secure_url,
+        publicId: result.public_id,
+        size: file.size,
+      };
+    } catch (error) {
+      throw new Error("File upload failed");
+    }
+  };
+
+
+
   return {
     getProfile,
     updateProfile,
     deleteProfile,
-    getSearchedUsers
+    getSearchedUsers,
+    uploadFile,
   };
 };
 

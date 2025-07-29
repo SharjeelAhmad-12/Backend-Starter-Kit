@@ -1,5 +1,7 @@
-const express = require("express");
 const dotenv = require("dotenv");
+dotenv.config();
+
+const express = require("express");
 const connectDB = require("./config/db");
 const morganMiddleware = require("./middlewares/morganMiddleware");
 const setupSwagger = require("./config/swagger");
@@ -21,14 +23,14 @@ const userController = require("./controllers/userController")(userService);
 const profileController = userController;
 const userRoutes = require("./routes/userRoutes");
 
-const verifyToken = require("./middlewares/verifyToken");
 const authorizeRole = require("./middlewares/authorizeRole");
+const verifyToken = require("./middlewares/verifyToken");
+
 
 const validateRequest = require("./middlewares/validateRequest");
 const upload = require("./middlewares/uploadMiddleware");
 const {updateProfileSchema} = require("./validations/profileValidation");
 
-dotenv.config();
 
 const app = express();
 
@@ -59,6 +61,7 @@ app.use(
 connectDB().then(() => {
   app.listen(process.env.PORT || 8000, () => {
     console.log(`🚀 Server running on port ${process.env.PORT || 8000}`);
-    console.log(`📚 Swagger docs available at: http://localhost:${process.env.PORT}/api-docs`);
+    console.log(`📄 Swagger Docs: http://localhost:${8000}/api-docs`);
+
   });
 });

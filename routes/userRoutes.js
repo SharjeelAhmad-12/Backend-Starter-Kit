@@ -1,3 +1,4 @@
+
 const express = require("express");
 
 const userRoutes = ({
@@ -28,6 +29,14 @@ const userRoutes = ({
     verifyToken,
     authorizeRole("admin"),
     userController.getSearchedUsers
+  );
+
+    router.post(
+    "/upload-file",
+    verifyToken,
+    upload.single("file"),
+    userController.uploadFile
+
   );
 
   return router;
