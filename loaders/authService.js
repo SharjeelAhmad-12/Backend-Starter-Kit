@@ -19,4 +19,4 @@ const authService = authServiceFactory({
 
 const authController = authControllerFactory(authService);
 
-module.exports = { authController };
+module.exports = authController ;

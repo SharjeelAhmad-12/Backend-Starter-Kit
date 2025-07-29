@@ -32,8 +32,6 @@ const options = {
   apis: [
     "./routes/authRoutes.js",
     "./docs/authSwagger.js",
-    "./routes/profileRoutes.js",
-    "./docs/profileSwagger.js",
      "./models/*.js",
      "./docs/otpSwagger.js",
      "./routes/otpRoutes.js",

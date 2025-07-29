@@ -1,4 +1,3 @@
-// routes/authRoutes.js
 const express = require("express");
 const {
   registerSchema,
@@ -11,7 +10,7 @@ const {
 const validateRequest = require("../middlewares/validateRequest");
 const verifyToken = require("../middlewares/verifyToken");
 
-module.exports = ({ authController }) => {
+module.exports = ( authController ) => {
   const router = express.Router();
 
   router.post(
