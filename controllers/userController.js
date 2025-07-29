@@ -1,7 +1,7 @@
 const userController = (userService) => {
   const getProfile = async (req, res) => {
     try {
-      const user = await userService.getProfile(req.user._id);
+      const user = await userService.getProfile(req.user.id);
       res.status(200).json({
         success: true,
         message: "Profile fetched successfully",
@@ -19,7 +19,7 @@ const userController = (userService) => {
     try {
       const imageBuffer = req.file?.buffer;
       const updatedUser = await userService.updateProfile(
-        req.user._id,
+        req.user.id,
         req.body,
         imageBuffer
       );
@@ -38,7 +38,7 @@ const userController = (userService) => {
 
   const deleteProfile = async (req, res) => {
     try {
-      const result = await userService.deleteProfile(req.user._id);
+      const result = await userService.deleteProfile(req.user.id);
       res.status(200).json({
         success: true,
         message: result.message,

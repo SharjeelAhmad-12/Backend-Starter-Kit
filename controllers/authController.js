@@ -12,7 +12,8 @@ const authControllerFactory = (authService) => ({
 
   login: async (req, res, next) => {
     try {
-      const result = await authService.login(req.body);
+      const { email, password } = req.body;
+      const result = await authService.login(email, password);
       sendResponse(res, 200, true, "Login Successful", result);
     } catch (error) {
       next(error);
@@ -30,7 +31,11 @@ const authControllerFactory = (authService) => ({
 
   resetPassword: async (req, res, next) => {
     try {
-      await authService.resetPassword(req.body.email, req.body.OTP, req.body.password);
+      await authService.resetPassword(
+        req.body.email,
+        req.body.OTP,
+        req.body.password
+      );
       sendResponse(res, 200, true, "Password Updated Successfully");
     } catch (error) {
       next(error);

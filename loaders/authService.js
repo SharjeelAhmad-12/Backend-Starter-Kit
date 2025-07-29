@@ -1,27 +1,22 @@
+const authServiceFactory = require("../services/auth.service");
+const authControllerFactory = require("../controllers/authController");
+
+const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
+const tokenUtils = require("../utils/generateToken");
 const sendEmail = require("../utils/sendEmail");
 const sendOTP = require("../utils/sendOTP");
-// const generateToken = require("../utils/generateToken");
-// const generateRefreshToken = require("../utils/generateRefreshToken");
-const generateToken = (payload) => {
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "15m" });
-};
 
-const generateRefreshToken = (payload) => {
-  return jwt.sign(payload, process.env.REFRESH_SECRET, { expiresIn: "7d" });
-};
-
-const authServiceFactory = require("../services/auth.service");
-
-const authService = authServiceFactory(
+const authService = authServiceFactory({
   User,
   bcrypt,
-  generateToken,
-  generateRefreshToken,
+  jwt,
+  tokenUtils,
   sendEmail,
-  sendOTP
-);
+  sendOTP,
+});
 
-module.exports = authService;
+const authController = authControllerFactory(authService);
+
+module.exports = authController ;
