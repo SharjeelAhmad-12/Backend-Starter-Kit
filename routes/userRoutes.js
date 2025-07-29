@@ -1,3 +1,4 @@
+
 const express = require("express");
 
 const userRoutes = ({
@@ -30,6 +31,14 @@ const userRoutes = ({
     userController.getSearchedUsers
   );
       router.post(
+    "/upload-file",
+    verifyToken,
+    upload.single("file"),
+    userController.uploadFile
+
+  );
+
+    router.post(
     "/upload-file",
     verifyToken,
     upload.single("file"),
