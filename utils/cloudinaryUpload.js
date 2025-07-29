@@ -1,7 +1,5 @@
 
 const cloudinary = require("../config/cloudinary");
-
-const cloudinary = require("../config/cloudinary");
 const streamifier = require("streamifier");
 
 const streamUpload = (buffer, options = {}) =>
@@ -62,6 +60,7 @@ const streamUpload = (buffer, options = {}) =>
 
     readStream.pipe(stream);
   });
+      }
       }
     );
 
