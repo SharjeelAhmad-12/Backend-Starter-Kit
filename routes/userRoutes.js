@@ -33,7 +33,7 @@ const userRoutes = ({
 
   router.post(
     "/upload-file",
-    authMiddleware,
+     authMiddleware,
     upload.single("file"),
     userController.uploadFile
 

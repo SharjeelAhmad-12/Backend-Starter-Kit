@@ -69,6 +69,7 @@ const userController = (userService) => {
 
   const uploadFile = async(req,res)=>
   {
+console.log("req.file=", req.file);
     try
     {
       if(!req.file)

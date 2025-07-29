@@ -1,5 +1,7 @@
-const express = require("express");
 const dotenv = require("dotenv");
+dotenv.config();
+
+const express = require("express");
 const connectDB = require("./config/db");
 const morganMiddleware = require("./middlewares/morganMiddleware");
 const setupSwagger = require("./config/swagger");
@@ -29,7 +31,6 @@ const validateRequest = require("./middlewares/validateRequest");
 const upload = require("./middlewares/uploadMiddleware");
 const updateProfileSchema = require("./validations/profileValidation");
 
-dotenv.config();
 
 const app = express();
 
