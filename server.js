@@ -35,8 +35,14 @@ const {updateProfileSchema} = require("./validations/profileValidation");
 const app = express();
 
 app.use(express.json());
+app.use(express.static('public')); // Serve static files from public directory
 setupSwagger(app);
 app.use(morganMiddleware);
+
+// Serve the API banner page
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/api-banner.html');
+});
 
 const authController = require("./loaders/authService"); 
 
