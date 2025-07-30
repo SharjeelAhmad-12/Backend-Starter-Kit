@@ -19,7 +19,7 @@
  *           example: "Operation completed successfully"
  *         data:
  *           type: object
- *           description: Response data (optional)
+ *           description: "Response data (optional)"
  *           nullable: true
  *     
  *     ErrorResponse:
@@ -191,15 +191,15 @@
  *               example: "jpg"
  *             width:
  *               type: integer
- *               description: Image width (if applicable)
+ *               description: "Image width (if applicable)"
  *               example: 1920
  *             height:
  *               type: integer
- *               description: Image height (if applicable)
+ *               description: "Image height (if applicable)"
  *               example: 1080
  *             resourceType:
  *               type: string
- *               description: Type of resource (image, video, raw)
+ *               description: "Type of resource (image, video, raw)"
  *               example: "image"
  *     
  *     # ========================================

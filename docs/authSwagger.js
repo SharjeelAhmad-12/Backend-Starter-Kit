@@ -31,7 +31,7 @@
  *           type: string
  *           minLength: 6
  *           maxLength: 128
- *           description: User's password (minimum 6 characters)
+ *           description: "User's password (minimum 6 characters)"
  *           example: "strongpassword123"
  *         role:
  *           type: string
@@ -89,7 +89,7 @@
  *           type: string
  *           minLength: 6
  *           maxLength: 128
- *           description: New password (minimum 6 characters)
+ *           description: "New password (minimum 6 characters)"
  *           example: "newsecurepassword123"
  *     
  *     ChangePasswordRequest:
@@ -106,7 +106,7 @@
  *           type: string
  *           minLength: 6
  *           maxLength: 128
- *           description: New password (minimum 6 characters)
+ *           description: "New password (minimum 6 characters)"
  *           example: "newstrongpassword123"
  */
 
@@ -259,7 +259,7 @@
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       429:
- *         description: Too many requests (rate limited)
+ *         description: "Too many requests (rate limited)"
  *         content:
  *           application/json:
  *             schema:

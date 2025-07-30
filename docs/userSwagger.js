@@ -26,12 +26,12 @@
  *         phone:
  *           type: string
  *           pattern: "^[0-9]{10,15}$"
- *           description: User's phone number (10-15 digits)
+ *           description: "User's phone number (10-15 digits)"
  *           example: "1234567890"
  *         profileImage:
  *           type: string
  *           format: binary
- *           description: Profile image file (supports: jpg, jpeg, png, gif)
+ *           description: "Profile image file (supports: jpg, jpeg, png, gif)"
  *     
  *     UserSearchQuery:
  *       type: object
@@ -312,7 +312,7 @@
  *               file:
  *                 type: string
  *                 format: binary
- *                 description: File to upload (supports: images, videos, documents)
+ *                 description: "File to upload (supports: images, videos, documents)"
  *     responses:
  *       200:
  *         description: File uploaded successfully
